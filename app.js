@@ -1,3 +1,4 @@
+'use strict'
 const express = require('express'),
 	path = require('path'),
 	favicon = require('serve-favicon'),
@@ -6,7 +7,8 @@ const express = require('express'),
 	bodyParser = require('body-parser');
 
 const index = require('./routes/index'),
-	users = require('./routes/users');
+	users = require('./routes/users'),
+	strava = require('./routes/strava');
 
 const app = express();
 
@@ -24,10 +26,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/strava', strava);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
