@@ -74,17 +74,27 @@ getRoutes = function () {
 			let routesContainer = document.getElementById('routes');
 			console.log(routes);
 			routes.forEach(route => {
-				console.log(route);
-				let sec = document.createElement('section');
-				sec.innerHTML = `<h1>${route.name}</h1>`;
-				let p = document.createElement('p');
-				p.innerText = `Distance: ${route.distance}`;
-				sec.appendChild(p);
-				let desc = document.createElement('p');
-				desc.innerText = route.description;
-				sec.appendChild(desc);
-				routesContainer.appendChild(sec);
+				getARoute(route.id);
 			});
+		})
+		.catch(err => {throw(err);});
+},
+
+getARoute = function(id){
+	fetch(`strava/route/${id}`)
+		.then(route => route.json())
+		.then(route => {
+			let routesContainer = document.getElementById('routes');
+			console.log(route);
+			let sec = document.createElement('section');
+			sec.innerHTML = `<h1>${route.name}</h1>`;
+			let p = document.createElement('p');
+			p.innerText = `Distance: ${toKm(route.distance)} km`;
+			sec.appendChild(p);
+			let desc = document.createElement('p');
+			desc.innerText = route.description;
+			sec.appendChild(desc);
+			routesContainer.appendChild(sec);
 		})
 		.catch(err => {throw(err);});
 };
