@@ -1,4 +1,22 @@
-let getName = function () {
+let toKm = function(inMeters){
+	let km = (inMeters / 1000).toFixed(3);
+	return km;
+},
+
+secToHMS = function(givenSec){
+	let hours = Math.floor(givenSec / 3600);
+	givenSec = givenSec % 3600;
+	let mins = Math.floor(givenSec / 60);
+	let secs = givenSec % 60;
+	return {hours, mins, secs};
+},
+
+formatTime = function(givenSec){
+	let time = secToHMS(givenSec);
+	return `Hours: ${time.hours} Mins: ${time.mins} Sec: ${time.secs}`;
+}
+
+getName = function () {
 	fetch('strava/name')
 		.then(response => response.json())
 		.then(response => {
@@ -8,20 +26,25 @@ let getName = function () {
 },
 
 getActivites = function () {
-		fetch('strava/activities')
-			.then(activities => activities.json())
-			.then(activities => {
-				let activiesContainer = document.getElementById('activities');
-				activities.forEach(activity => {
-					console.log(activity);
-					let sec = document.createElement('section');
-					sec.innerHTML = `<h1>${activity.name}</h1>`;
-					let p = document.createElement('p');
-					p.innerText = `Distance: ${activity.distance}, Time: ${activity.moving_time}`;
-					sec.appendChild(p);
-					activiesContainer.appendChild(sec);
-				});
+	fetch('strava/activities')
+		.then(activities => activities.json())
+		.then(activities => {
+			let activiesContainer = document.getElementById('activities');
+			activities.forEach(activity => {
+				console.log(activity);
+				let sec = document.createElement('section'),
+					p = document.createElement('p'),
+					p2 = document.createElement('p');
+
+				sec.innerHTML = `<h1>${activity.name}</h1>`;
+				p.innerText = `Distance: ${toKm(activity.distance)}km`;
+				p2.innerText = `Active Time: ${formatTime(activity.moving_time)}`;
+
+				sec.appendChild(p);
+				sec.appendChild(p2);
+				activiesContainer.appendChild(sec);
 			});
+		});
 },
 
 getSegments = function () {
@@ -36,7 +59,7 @@ getSegments = function () {
 				let sec = document.createElement('section');
 				sec.innerHTML = `<h1>${segment.name}</h1>`;
 				let p = document.createElement('p');
-				p.innerText = `Distance: ${segment.distance}`;
+				p.innerText = `Distance: ${toKm(segment.distance)} km`;
 				sec.appendChild(p);
 				segmentsContainer.appendChild(sec);
 			});
