@@ -75,6 +75,24 @@ let getRoutes = function () {
 	});
 };
 
+let getARoute = function (id) {
+	return new Promise((resolve, reject) => {
+		console.log('Frantically searching a route');
+		strava.routes.get({'id': id},function(err,payload) {
+			if(!err) {
+				console.log('Found it');
+				resolve(payload);
+			}
+			else {
+				reject(err);
+				console.log('Lost them :(');
+				console.log(err);
+				throw err;
+			}
+		});
+	});
+};
+
 /* GET users listing. */
 router.get('/name', function(req, res, next) {
 	getAthlete()
@@ -116,6 +134,18 @@ router.get('/routes', function(req, res, next) {
 		.then(routes => {
 			console.log(routes);
 			return routes;
+		})
+		.then(data => {
+			res.send(data);
+		})
+		.catch(err => {throw  err;});
+});
+
+router.get('/route/:id', function(req, res, next) {
+	getARoute(req.params.id)
+		.then(route => {
+			console.log(route);
+			return route;
 		})
 		.then(data => {
 			res.send(data);
